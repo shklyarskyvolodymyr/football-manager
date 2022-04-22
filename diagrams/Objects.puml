@@ -1,0 +1,21 @@
+@startuml
+object League
+object Manager
+object Match
+object Player
+object Sponsor
+object Stadium
+object Team
+object Trainer
+
+Team "1" -- "1" Trainer
+Team "1" -- "*" Match
+Team "1" -- "1" Sponsor
+Team "1" -- "*" Player
+Team "*" -- "1" League
+Team "1" -- "1" Manager
+Team "1" -- "1" Stadium
+Match "1" -- "*" Player
+Match "1" -- "1" Stadium
+Match "*" -- "1" League
+@enduml
