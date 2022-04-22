@@ -34,3 +34,5 @@ Winger players add their playmaking skill into playmaking.
 - Kafka
 - Redis
 - Java concurrency -> reactive programing
+- FlatBuffers
+- java NIO
