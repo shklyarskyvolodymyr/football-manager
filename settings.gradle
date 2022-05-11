@@ -1,3 +1,4 @@
 rootProject.name = 'football-manager'
 include 'server'
 include 'client'
+include 'internal-module'

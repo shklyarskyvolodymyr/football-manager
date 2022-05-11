@@ -1,12 +1,19 @@
 package com.pet.intellias.football.manager.client;
 
 
+import com.pet.intellias.football.manager.client.impl.NIOClientImpl;
+
 public class MainClientNIO {
 
     private static String host = "localhost";
     private static int port = 20000;
+    private static String message = "Hello";
 
     public static void main(String[] args) {
-        NIOClient.createClient(host, port);
+        NIOClient client = new NIOClientImpl();
+        for (int i = 0; i < 10; i++) {
+            new Thread(() -> client.createClient(host, port, message))
+                    .start();
+        }
     }
 }
