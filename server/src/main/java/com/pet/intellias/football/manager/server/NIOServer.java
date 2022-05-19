@@ -7,9 +7,9 @@ public interface NIOServer {
 
     void bind();
 
-    void accept(SelectionKey key) throws IOException;
+    void accept(SelectionKey key);
 
-    void send(SelectionKey key, String message) throws IOException;
+    void send(SelectionKey key, String message);
 
-    void receive(SelectionKey key) throws IOException;
+    void receive(SelectionKey key);
 }

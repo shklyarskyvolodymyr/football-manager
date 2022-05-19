@@ -53,7 +53,7 @@ public class NIOServerImpl implements NIOServer {
         }
     }
 
-    private void handleSelection(SelectionKey key, String message) throws IOException {
+    private void handleSelection(SelectionKey key, String message) {
         if (key.isAcceptable()) {
             accept(key);
         }
@@ -66,31 +66,45 @@ public class NIOServerImpl implements NIOServer {
     }
 
     @Override
-    public void send(SelectionKey key, String message) throws IOException {
+    public void send(SelectionKey key, String message) {
         logger.info("sending data to client");
         SocketChannel channel = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.wrap(message.getBytes());
-        channel.write(buffer);
-        logger.info("Data was send to server: " + message);
-        key.interestOps(SelectionKey.OP_READ);
-        channel.close();
+        try {
+            channel.write(buffer);
+            logger.info("Data was send to server: " + message);
+            key.interestOps(SelectionKey.OP_READ);
+            channel.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void accept(SelectionKey key) throws IOException {
+    public void accept(SelectionKey key) {
         logger.info("client was connected");
         ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
-        SocketChannel channel = serverSocketChannel.accept();
-        channel.configureBlocking(false);
-        channel.register(selector, SelectionKey.OP_READ);
+        SocketChannel channel = null;
+        try {
+            channel = serverSocketChannel.accept();
+            channel.configureBlocking(false);
+            channel.register(selector, SelectionKey.OP_READ);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void receive(SelectionKey key) throws IOException {
+    public void receive(SelectionKey key) {
         logger.info("Starting reading data from client");
         SocketChannel channel = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.allocate(16);
-        int bytes = channel.read(buffer);
+        int bytes = 0;
+        try {
+            bytes = channel.read(buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         logger.info("Read bytes from client: " + bytes);
         String result = new String(buffer.array()).trim();
         logger.info("Received from client: " + result);
