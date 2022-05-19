@@ -54,7 +54,6 @@ public class NIOServerImpl implements NIOServer {
     }
 
     private void handleSelection(SelectionKey key, String message) throws IOException {
-//        todo remove if, switch?
         if (key.isAcceptable()) {
             accept(key);
         }
@@ -82,9 +81,7 @@ public class NIOServerImpl implements NIOServer {
         logger.info("client was connected");
         ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
         SocketChannel channel = serverSocketChannel.accept();
-//        todo why 2 times?
         channel.configureBlocking(false);
-//        todo OP_READ? what if it will be write?
         channel.register(selector, SelectionKey.OP_READ);
     }
 
