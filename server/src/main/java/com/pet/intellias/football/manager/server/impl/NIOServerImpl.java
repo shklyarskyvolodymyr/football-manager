@@ -1,6 +1,8 @@
 package com.pet.intellias.football.manager.server.impl;
 
+import com.pet.intellias.football.manager.server.Command;
 import com.pet.intellias.football.manager.server.NIOServer;
+import com.pet.intellias.football.manager.server.domain.OperationValues;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -9,27 +11,34 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 public class NIOServerImpl implements NIOServer {
 
     private static Logger logger = Logger.getLogger(NIOServerImpl.class.getName());
-//    todo use map or allocate buffer every time?
-    private static Map<SocketChannel, ByteBuffer> sockets = new ConcurrentHashMap<>();
+    private final Map<OperationValues, Command> dispatcherMethods = new HashMap<>();
     private static String message = "Hi";
     private InetSocketAddress address;
     private Selector selector;
+    private SelectionKey key;
 
     public NIOServerImpl(InetSocketAddress address) {
+        initializeDispatcherMethods();
         this.address = address;
         try {
             this.selector = Selector.open();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void initializeDispatcherMethods() {
+        dispatcherMethods.put(OperationValues.isAcceptable, this::accept);
+        dispatcherMethods.put(OperationValues.isWritable, this::send);
+        dispatcherMethods.put(OperationValues.isReadable, this::receive);
     }
 
     @Override
@@ -43,9 +52,11 @@ public class NIOServerImpl implements NIOServer {
                 selector.select();
                 Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
                 while (keyIterator.hasNext()) {
-                    SelectionKey key = keyIterator.next();
+                    key = keyIterator.next();
                     keyIterator.remove();
-                    handleSelection(key, message);
+                    logger.info("In handler readyOps value:" + key.readyOps());
+                    dispatcherMethods.get(OperationValues.valueOf(key.readyOps()))
+                            .runCommand();
                 }
             }
         } catch (IOException e) {
@@ -53,20 +64,9 @@ public class NIOServerImpl implements NIOServer {
         }
     }
 
-    private void handleSelection(SelectionKey key, String message) {
-        if (key.isAcceptable()) {
-            accept(key);
-        }
-        if (key.isReadable()) {
-            receive(key);
-        }
-        if (key.isWritable()) {
-            send(key, message);
-        }
-    }
 
     @Override
-    public void send(SelectionKey key, String message) {
+    public void send() {
         logger.info("sending data to client");
         SocketChannel channel = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.wrap(message.getBytes());
@@ -81,7 +81,7 @@ public class NIOServerImpl implements NIOServer {
     }
 
     @Override
-    public void accept(SelectionKey key) {
+    public Runnable accept() {
         logger.info("client was connected");
         ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
         SocketChannel channel = null;
@@ -92,10 +92,11 @@ public class NIOServerImpl implements NIOServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     @Override
-    public void receive(SelectionKey key) {
+    public void receive() {
         logger.info("Starting reading data from client");
         SocketChannel channel = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.allocate(16);
