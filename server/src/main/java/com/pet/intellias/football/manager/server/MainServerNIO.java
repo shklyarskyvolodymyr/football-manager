@@ -12,7 +12,7 @@ public class MainServerNIO {
 
     public static void main(String[] args) {
         NIOServer server = new NIOServerImpl(new InetSocketAddress(host, port));
-        new Thread(server::bind)
+        new Thread(server::createServer)
                 .start();
     }
 }

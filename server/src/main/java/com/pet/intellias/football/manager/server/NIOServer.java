@@ -2,7 +2,7 @@ package com.pet.intellias.football.manager.server;
 
 public interface NIOServer {
 
-    void bind();
+    void createServer();
 
     Runnable accept();
 

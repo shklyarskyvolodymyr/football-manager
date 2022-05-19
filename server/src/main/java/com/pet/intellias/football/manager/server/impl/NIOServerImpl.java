@@ -42,7 +42,7 @@ public class NIOServerImpl implements NIOServer {
     }
 
     @Override
-    public void bind() {
+    public void createServer() {
         try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open()) {
             serverSocketChannel.configureBlocking(false);
             serverSocketChannel.bind(address);
@@ -54,7 +54,6 @@ public class NIOServerImpl implements NIOServer {
                 while (keyIterator.hasNext()) {
                     key = keyIterator.next();
                     keyIterator.remove();
-                    logger.info("In handler readyOps value:" + key.readyOps());
                     dispatcherMethods.get(OperationValues.valueOf(key.readyOps()))
                             .runCommand();
                 }
