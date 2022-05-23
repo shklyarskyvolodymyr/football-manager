@@ -1,4 +1,13 @@
 rootProject.name = 'football-manager'
-include 'server'
-include 'client'
-include 'internal-module'
+
+rootDir.listFiles(new FileFilter() {
+    boolean accept(File file) {
+        if (!file.isDirectory()) {
+            return false
+        }
+        if (file.name == 'buildSrc') {
+            return false
+        }
+        return new File(file, 'build.gradle').isFile()
+    }
+}).each { File dir -> include dir.name }

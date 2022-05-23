@@ -1,7 +1,14 @@
 plugins {
-    id 'java'
+    id 'com.pet.intellias.football.manager.java-application-conventions'
 }
 
+sourceCompatibility = 11
+targetCompatibility = 11
+
 dependencies {
-    implementation project(':internal-module')
+
+}
+
+application {
+    mainClass = 'com.pet.intellias.football.manager.client.MainClientNIO'
 }
