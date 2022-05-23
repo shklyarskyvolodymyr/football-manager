@@ -65,25 +65,27 @@ public class NIOServerImpl implements NIOServer {
 
 
     @Override
-    public void send() {
+    public int send() {
+        int bytes = 0;
         logger.info("sending data to client");
         SocketChannel channel = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.wrap(message.getBytes());
         try {
-            channel.write(buffer);
+            bytes = channel.write(buffer);
             logger.info("Data was send to server: " + message);
             key.interestOps(SelectionKey.OP_READ);
             channel.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return bytes;
     }
 
     @Override
     public Runnable accept() {
         logger.info("client was connected");
         ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
-        SocketChannel channel = null;
+        SocketChannel channel;
         try {
             channel = serverSocketChannel.accept();
             channel.configureBlocking(false);
@@ -95,7 +97,7 @@ public class NIOServerImpl implements NIOServer {
     }
 
     @Override
-    public void receive() {
+    public String receive() {
         logger.info("Starting reading data from client");
         SocketChannel channel = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.allocate(16);
@@ -109,5 +111,6 @@ public class NIOServerImpl implements NIOServer {
         String result = new String(buffer.array()).trim();
         logger.info("Received from client: " + result);
         key.interestOps(SelectionKey.OP_WRITE);
+        return result;
     }
 }

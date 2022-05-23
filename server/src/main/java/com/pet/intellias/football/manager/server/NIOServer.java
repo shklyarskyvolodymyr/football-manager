@@ -6,7 +6,7 @@ public interface NIOServer {
 
     Runnable accept();
 
-    void send();
+    int send();
 
-    void receive();
+    String receive();
 }
