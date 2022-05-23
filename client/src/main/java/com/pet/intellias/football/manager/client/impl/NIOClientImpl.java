@@ -11,28 +11,14 @@ import java.util.logging.Logger;
 public class NIOClientImpl implements NIOClient {
 
     private static Logger logger = Logger.getLogger(NIOClientImpl.class.getName());
+    private final SocketChannel client;
 
-    public void createClient(String host, int port, String message){
-        SocketChannel client = connect(new InetSocketAddress(host, port));
-        send(client, message);
-        String result = receive(client);
-        logger.info("Received from server: " + result);
+    public NIOClientImpl(String host, int port) {
+        this.client = bind(host, port);
     }
 
     @Override
-    public SocketChannel connect(InetSocketAddress address) {
-        SocketChannel server = null;
-        try {
-            server = SocketChannel.open(address);
-            logger.info("Connected to server: " + address.getHostName() + ":" + address.getPort());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return server;
-    }
-
-    @Override
-    public void send(SocketChannel client, String message) {
+    public void send(String message) {
         logger.info("Started sending data to server");
         ByteBuffer buffer = ByteBuffer.wrap(message.getBytes());
         try {
@@ -44,16 +30,27 @@ public class NIOClientImpl implements NIOClient {
     }
 
     @Override
-    public String receive(SocketChannel client) {
+    public String receive() {
         logger.info("Started receiving data from server");
         ByteBuffer buffer = ByteBuffer.allocate(16);
-        int bytes = 0;
         try {
-            bytes = client.read(buffer);
+            client.read(buffer);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("Read bytes from server: " + bytes);
-        return new String(buffer.array()).trim();
+        String result = new String(buffer.array()).trim();
+        logger.info("Received from server: " + result);
+        return result;
+    }
+
+    private SocketChannel bind(String host, int port){
+        SocketChannel client = null;
+        try {
+            client = SocketChannel.open(new InetSocketAddress(host, port));
+            logger.info("Connected to server: " + host + ":" + port);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return client;
     }
 }

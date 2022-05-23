@@ -10,10 +10,13 @@ public class MainClientNIO {
     private static String message = "Hello";
 
     public static void main(String[] args) {
-        NIOClient client = new NIOClientImpl();
         for (int i = 0; i < 10; i++) {
-            new Thread(() -> client.createClient(host, port, message))
-                    .start();
+            NIOClient client = new NIOClientImpl(host, port);
+            new Thread(() -> {
+            client.send(message);
+            client.receive();
+            })
+            .start();
         }
     }
 }
