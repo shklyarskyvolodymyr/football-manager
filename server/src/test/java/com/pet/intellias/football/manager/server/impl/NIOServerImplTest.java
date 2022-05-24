@@ -81,8 +81,7 @@ class NIOServerImplTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String result = new String(buffer.array()).trim();
-        return result;
+        return new String(buffer.array()).trim();
     }
 
     private void startServer() {

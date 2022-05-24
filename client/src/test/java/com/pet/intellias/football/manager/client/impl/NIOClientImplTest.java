@@ -15,14 +15,13 @@ class NIOClientImplTest {
     private String host = "localhost";
     private int port = 10000;
     private String message = "test";
-    private NIOClient unit;
     private NIOServer server = new NIOServerImpl(new InetSocketAddress(host, port));
 
 
     @Test
     void send() {
         startServer();
-        unit = new NIOClientImpl(host, port);
+        NIOClient unit = new NIOClientImpl(host, port);
         int sendBytes = unit.send(message);
 
         assertEquals(4, sendBytes);
@@ -31,7 +30,7 @@ class NIOClientImplTest {
     @Test
     void receive() {
         startServer();
-        unit = new NIOClientImpl(host, port);
+        NIOClient unit = new NIOClientImpl(host, port);
         unit.send(message);
         String result = unit.receive();
 
