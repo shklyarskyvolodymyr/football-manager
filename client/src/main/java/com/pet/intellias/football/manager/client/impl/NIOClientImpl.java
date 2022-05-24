@@ -18,15 +18,17 @@ public class NIOClientImpl implements NIOClient {
     }
 
     @Override
-    public void send(String message) {
+    public int send(String message) {
         logger.info("Started sending data to server");
         ByteBuffer buffer = ByteBuffer.wrap(message.getBytes());
+        int bytes = 0;
         try {
-            client.write(buffer);
+            bytes = client.write(buffer);
             logger.info("Data was send to server: " + message);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return bytes;
     }
 
     @Override
