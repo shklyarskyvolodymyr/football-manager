@@ -1,48 +1,37 @@
 package com.pet.intellias.football.manager.client.impl;
 
 import com.pet.intellias.football.manager.client.NIOClient;
-
+import com.pet.intellias.football.manager.client.domain.ClientOperationValues;
+import com.pet.intellias.football.manager.client.operation.ClientCommand;
+import com.pet.intellias.football.manager.client.operation.impl.Receive;
+import com.pet.intellias.football.manager.client.operation.impl.Send;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class NIOClientImpl implements NIOClient {
 
     private static Logger logger = Logger.getLogger(NIOClientImpl.class.getName());
-    private final SocketChannel client;
+    private final SocketChannel socketChannel;
+    private final Map<ClientOperationValues, ClientCommand> dispatcherMethods = new HashMap<>();
+
 
     public NIOClientImpl(String host, int port) {
-        this.client = bind(host, port);
+        this.socketChannel = bind(host, port);
     }
 
     @Override
-    public int send(String message) {
-        logger.info("Started sending data to server");
-        ByteBuffer buffer = ByteBuffer.wrap(message.getBytes());
-        int bytes = 0;
-        try {
-            bytes = client.write(buffer);
-            logger.info("Data was send to server: " + message);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void startClient(String message) {
+        initializeDispatcherMethods(socketChannel, message);
+        for (int i = 0; i < 10; i++) {
+            new Thread(() -> {
+                dispatcherMethods.get(ClientOperationValues.SEND);
+                dispatcherMethods.get(ClientOperationValues.RECEIVE);
+            }).start();
         }
-        return bytes;
-    }
-
-    @Override
-    public String receive() {
-        logger.info("Started receiving data from server");
-        ByteBuffer buffer = ByteBuffer.allocate(16);
-        try {
-            client.read(buffer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String result = new String(buffer.array()).trim();
-        logger.info("Received from server: " + result);
-        return result;
     }
 
     private SocketChannel bind(String host, int port){
@@ -54,5 +43,10 @@ public class NIOClientImpl implements NIOClient {
             e.printStackTrace();
         }
         return client;
+    }
+
+    private void initializeDispatcherMethods(SocketChannel socketChannel, String message) {
+        dispatcherMethods.put(ClientOperationValues.RECEIVE, new Receive(socketChannel, null));
+        dispatcherMethods.put(ClientOperationValues.SEND, new Send(socketChannel, message));
     }
 }

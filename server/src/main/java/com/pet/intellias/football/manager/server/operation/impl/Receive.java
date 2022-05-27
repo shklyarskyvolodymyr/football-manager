@@ -1,6 +1,6 @@
 package com.pet.intellias.football.manager.server.operation.impl;
 
-import com.pet.intellias.football.manager.server.operation.Command;
+import com.pet.intellias.football.manager.server.operation.ServerCommand;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -9,7 +9,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.logging.Logger;
 
-public class Receive extends Command {
+public class Receive extends ServerCommand {
 
     private static Logger logger = Logger.getLogger(Receive.class.getName());
 

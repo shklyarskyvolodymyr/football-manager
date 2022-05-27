@@ -1,7 +1,7 @@
 package com.pet.intellias.football.manager.server;
 
-import com.pet.intellias.football.manager.server.domain.OperationValues;
-import com.pet.intellias.football.manager.server.operation.Command;
+import com.pet.intellias.football.manager.server.domain.ServerOperationValues;
+import com.pet.intellias.football.manager.server.operation.ServerCommand;
 import com.pet.intellias.football.manager.server.operation.impl.Accept;
 import com.pet.intellias.football.manager.server.operation.impl.Receive;
 import com.pet.intellias.football.manager.server.operation.impl.Send;
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 public class ServerRunnable implements Runnable {
 
     private static Logger logger = Logger.getLogger(ServerRunnable.class.getName());
-    private final Map<OperationValues, Command> dispatcherMethods = new HashMap<>();
+    private final Map<ServerOperationValues, ServerCommand> dispatcherMethods = new HashMap<>();
     private static String message = "Hi";
     private InetSocketAddress address;
     private Selector selector;
@@ -48,7 +48,7 @@ public class ServerRunnable implements Runnable {
                     SelectionKey key = keyIterator.next();
                     keyIterator.remove();
                     initializeDispatcherMethods(key, selector, message);
-                    dispatcherMethods.get(OperationValues.valueOf(key.readyOps()))
+                    dispatcherMethods.get(ServerOperationValues.valueOf(key.readyOps()))
                             .runCommand();
                 }
             }
@@ -58,8 +58,8 @@ public class ServerRunnable implements Runnable {
     }
 
     private void initializeDispatcherMethods(SelectionKey key, Selector selector, String message) {
-        dispatcherMethods.put(OperationValues.ACCEPTABLE, new Accept(key, selector, message));
-        dispatcherMethods.put(OperationValues.WRITABLE, new Send(key, selector, message));
-        dispatcherMethods.put(OperationValues.READABLE, new Receive(key, selector, message));
+        dispatcherMethods.put(ServerOperationValues.ACCEPTABLE, new Accept(key, selector, message));
+        dispatcherMethods.put(ServerOperationValues.WRITABLE, new Send(key, selector, message));
+        dispatcherMethods.put(ServerOperationValues.READABLE, new Receive(key, selector, message));
     }
 }
