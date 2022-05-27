@@ -16,5 +16,5 @@ public abstract class Command {
         this.message = message;
     }
 
-    abstract public void runCommand();
+    abstract public int runCommand();
 }

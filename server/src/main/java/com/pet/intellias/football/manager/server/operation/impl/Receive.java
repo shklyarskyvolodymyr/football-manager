@@ -18,7 +18,7 @@ public class Receive extends Command {
     }
 
     @Override
-    public void runCommand() {
+    public int runCommand() {
         logger.info("Starting reading data from client");
         SocketChannel channel = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.allocate(16);
@@ -32,6 +32,6 @@ public class Receive extends Command {
         String result = new String(buffer.array()).trim();
         logger.info("Received from client: " + result);
         key.interestOps(SelectionKey.OP_WRITE);
-//        return result;
+        return bytes;
     }
 }

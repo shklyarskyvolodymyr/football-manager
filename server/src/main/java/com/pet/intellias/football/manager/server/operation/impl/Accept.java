@@ -18,7 +18,7 @@ public class Accept extends Command {
     }
 
     @Override
-    public void runCommand() {
+    public int runCommand() {
         logger.info("client was connected");
         ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
         SocketChannel channel;
@@ -29,5 +29,6 @@ public class Accept extends Command {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return 0;
     }
 }

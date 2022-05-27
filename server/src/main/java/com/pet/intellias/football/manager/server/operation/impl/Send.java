@@ -18,7 +18,7 @@ public class Send extends Command {
     }
 
     @Override
-    public void runCommand() {
+    public int runCommand() {
         int bytes = 0;
         logger.info("sending data to client");
         SocketChannel channel = (SocketChannel) key.channel();
@@ -31,6 +31,6 @@ public class Send extends Command {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        return bytes;
+        return bytes;
     }
 }
