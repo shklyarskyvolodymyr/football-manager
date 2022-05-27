@@ -5,9 +5,9 @@ import java.util.Map;
 
 public enum OperationValues {
 
-    isAcceptable(1 << 4),
-    isWritable(1 << 2),
-    isReadable(1 << 0);
+    ACCEPTABLE(1 << 4),
+    WRITABLE(1 << 2),
+    READABLE(1 << 0);
 
     private final int value;
     private static Map map = new HashMap();

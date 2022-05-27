@@ -4,9 +4,4 @@ public interface NIOServer {
 
     void createServer();
 
-    Runnable accept();
-
-    int send();
-
-    String receive();
 }
