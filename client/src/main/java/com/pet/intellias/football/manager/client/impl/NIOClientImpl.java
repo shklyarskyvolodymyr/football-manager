@@ -18,7 +18,6 @@ public class NIOClientImpl implements NIOClient {
     private final SocketChannel socketChannel;
     private final Map<ClientOperationValues, ClientCommand> dispatcherMethods = new HashMap<>();
 
-
     public NIOClientImpl(String host, int port) {
         this.socketChannel = bind(host, port);
     }
