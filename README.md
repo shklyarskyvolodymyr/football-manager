@@ -26,7 +26,7 @@ Goalkeepers add their goalkeeping skill into defence.
 Winger players add their playmaking skill into playmaking.
 
 ### Technologies
-- Java 17
+- Java 11
 - Gradle
 - Docker
 - Spring Boot

@@ -1,0 +1,4 @@
+plugins {
+    id 'com.pet.intellias.football.manager.java-common-conventions'
+    id 'application'
+}
