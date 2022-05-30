@@ -1,5 +1,6 @@
 package com.pet.intellias.football.manager.server.operation.impl;
 
+import com.pet.intellias.football.manager.server.domain.Response;
 import com.pet.intellias.football.manager.server.operation.ServerCommand;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class Receive extends ServerCommand {
     }
 
     @Override
-    public int runCommand() {
+    public Response runCommand() {
         logger.info("Starting reading data from client");
         SocketChannel channel = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.allocate(16);
@@ -32,6 +33,6 @@ public class Receive extends ServerCommand {
         String result = new String(buffer.array()).trim();
         logger.info("Received from client: " + result);
         key.interestOps(SelectionKey.OP_WRITE);
-        return bytes;
+        return new Response(bytes, message);
     }
 }

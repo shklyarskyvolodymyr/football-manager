@@ -1,5 +1,6 @@
 package com.pet.intellias.football.manager.server.operation.impl;
 
+import com.pet.intellias.football.manager.server.domain.Response;
 import com.pet.intellias.football.manager.server.operation.ServerCommand;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class Send extends ServerCommand {
     }
 
     @Override
-    public int runCommand() {
+    public Response runCommand() {
         int bytes = 0;
         logger.info("sending data to client");
         SocketChannel channel = (SocketChannel) key.channel();
@@ -31,6 +32,6 @@ public class Send extends ServerCommand {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return bytes;
+        return new Response(bytes, null);
     }
 }

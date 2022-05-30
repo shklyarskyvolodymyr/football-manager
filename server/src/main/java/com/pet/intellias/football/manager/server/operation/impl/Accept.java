@@ -1,5 +1,6 @@
 package com.pet.intellias.football.manager.server.operation.impl;
 
+import com.pet.intellias.football.manager.server.domain.Response;
 import com.pet.intellias.football.manager.server.operation.ServerCommand;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class Accept extends ServerCommand {
     }
 
     @Override
-    public int runCommand() {
+    public Response runCommand() {
         logger.info("client was connected");
         ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
         SocketChannel channel;
@@ -29,6 +30,6 @@ public class Accept extends ServerCommand {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return 0;
+        return new Response();
     }
 }

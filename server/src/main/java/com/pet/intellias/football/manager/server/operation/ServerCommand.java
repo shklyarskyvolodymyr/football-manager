@@ -1,6 +1,8 @@
 package com.pet.intellias.football.manager.server.operation;
 
 
+import com.pet.intellias.football.manager.server.domain.Response;
+
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 
@@ -16,5 +18,5 @@ public abstract class ServerCommand {
         this.message = message;
     }
 
-    abstract public int runCommand();
+    abstract public Response runCommand();
 }
